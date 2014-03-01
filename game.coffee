@@ -3,7 +3,9 @@
 canvas = null
 ctx    = null
 
-frame = 0
+frames = 0
+seconds = 0
+minutes = 0
 
 canvas_width  = 640
 canvas_height = 480
@@ -13,7 +15,6 @@ keys_down = {}
 mouse_x = 0
 mouse_y = 0
 mouse_left = false
-mouse_middle = false
 mouse_right = false
 
 # Puzzle
@@ -109,11 +110,7 @@ $(document).ready () ->
     null
 
   $(document).mouseup (evt) ->
-    mouse_left = mouse_middle = mouse_right = false
-    #switch evt.which
-    #  when 1 then mouse_left = false
-    #  when 2 then mouse_middle = false
-    #  when 3 then mouse_right = false
+    mouse_left = mouse_right = false
     null
 
   $(document).mousedown (evt) ->
@@ -122,8 +119,6 @@ $(document).ready () ->
         mouse_left = true
         if [r, c] = mouse_square()
           click_square(r, c)
-      when 2
-        mouse_middle = true
       when 3
         mouse_right = true
         if [r, c] = mouse_square()
@@ -145,14 +140,21 @@ $(document).ready () ->
   grid[4][0] = 5
   grid[4][2] = 2
   grid[4][4] = 3
+  pad2 = (s) -> ('00' + s)[-2..-1]
   (animloop = ->
     requestAnimFrame animloop
     if $('#running')[0].checked
-      frame++
+      frames++
+      if frames is 60
+        frames = 0
+        seconds++
+        if seconds is 60
+          seconds = 0
+          minutes++
       draw_scenery()
       lines =
-        [ "Frame #{frame}"
-        , "Mouse #{mouse_left}, #{mouse_middle}, #{mouse_right} at (#{mouse_x}, #{mouse_y})"
+        [ "Time: #{pad2(minutes)}:#{pad2(seconds)};#{pad2(frames)}"
+        , "Mouse [#{mouse_left}, #{mouse_right}] at (#{mouse_x}, #{mouse_y})"
         , "Mouse square #{mouse_square() ?. toString()}"
         , "Keys at #{Object.keys(keys_down).toString()}"
         ]
