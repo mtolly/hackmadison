@@ -33,6 +33,12 @@ pools = {}
 colors = {}
 current_color = 'black'
 
+set_canvas = ->
+  canvas_width = squares_wide() * square_width + 2 * grid_left
+  canvas_height = squares_high() * square_height + 2 * grid_top
+  canvas.width = canvas_width
+  canvas.height = canvas_height
+
 new_puzzle = (height, width) ->
   grid = []
   for r in [0 .. height - 1]
@@ -41,6 +47,7 @@ new_puzzle = (height, width) ->
       row.push null
       colors["#{r},#{c}"] = 'black'
     grid.push row
+  set_canvas()
   null
 
 load_file = (file) ->
@@ -80,6 +87,7 @@ load_puzzle = (str) ->
     grid.push sqs unless sqs.length is 0
   pools = {}
   colors = {}
+  set_canvas()
   null
 
 is_full = ->
