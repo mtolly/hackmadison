@@ -78,6 +78,8 @@ load_puzzle = (str) ->
       sq = char_to_square[c]
       sqs.push sq if sq isnt undefined
     grid.push sqs unless sqs.length is 0
+  pools = {}
+  colors = {}
   null
 
 is_full = ->
@@ -157,7 +159,7 @@ draw_square = (val, x, y, color = 'black') ->
         ctx.fillText val, x + (square_width * 2 / 7), y + (square_height * 3 / 4)
       else
         ctx.font = "#{square_height * 3 / 5}px Serif"
-        ctx.fillText val, x + (square_width * 1 / 7), y + (square_height * 5 / 7)
+        ctx.fillText val, x + (square_width * 1 / 8), y + (square_height * 5 / 7)
   null
 
 draw_scenery = ->
@@ -261,3 +263,6 @@ $(document).ready () ->
       $('#debug')[0].innerHTML = lines.join '<br />'
     null
   )()
+
+window.load_file = load_file
+window.load_puzzle = load_puzzle

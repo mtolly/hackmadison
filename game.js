@@ -138,6 +138,8 @@
         grid.push(sqs);
       }
     }
+    pools = {};
+    colors = {};
     return null;
   };
 
@@ -263,7 +265,7 @@
           ctx.fillText(val, x + (square_width * 2 / 7), y + (square_height * 3 / 4));
         } else {
           ctx.font = "" + (square_height * 3 / 5) + "px Serif";
-          ctx.fillText(val, x + (square_width * 1 / 7), y + (square_height * 5 / 7));
+          ctx.fillText(val, x + (square_width * 1 / 8), y + (square_height * 5 / 7));
         }
     }
     return null;
@@ -392,5 +394,9 @@
       return null;
     })();
   });
+
+  window.load_file = load_file;
+
+  window.load_puzzle = load_puzzle;
 
 }).call(this);
