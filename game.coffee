@@ -20,8 +20,8 @@ mouse_right = false
 # Puzzle
 
 grid = []
-square_width = 72
-square_height = 72
+square_width = 40
+square_height = 40
 grid_top = 15
 grid_left = 15
 
@@ -199,7 +199,7 @@ $(document).ready () ->
       window.setTimeout callback, 1000 / 60
   )()
 
-  puzzle_file = 'puzzles/1.txt'
+  puzzle_file = 'puzzles/2.txt'
   puz = load_file puzzle_file
   if puz
     load_puzzle puz if puz
@@ -221,7 +221,7 @@ $(document).ready () ->
         [ "Time: #{pad2(minutes)}:#{pad2(seconds)};#{pad2(frames)}"
         , "Mouse [#{mouse_left}, #{mouse_right}] at (#{mouse_x}, #{mouse_y})"
         , "Mouse square #{mouse_square() ?. toString()}"
-        , "Keys pressed: [#{Object.keys(keys_down).toString()}]"
+        #, "Keys pressed: [#{Object.keys(keys_down).toString()}]"
         , "Pools: [#{("(#{s})" for s in Object.keys(pools)).toString()}]"
         ]
       $('#debug')[0].innerHTML = lines.join '<br />'

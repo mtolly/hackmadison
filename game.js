@@ -28,9 +28,9 @@
 
   grid = [];
 
-  square_width = 72;
+  square_width = 40;
 
-  square_height = 72;
+  square_height = 40;
 
   grid_top = 15;
 
@@ -302,7 +302,7 @@
         return window.setTimeout(callback, 1000 / 60);
       };
     })();
-    puzzle_file = 'puzzles/1.txt';
+    puzzle_file = 'puzzles/2.txt';
     puz = load_file(puzzle_file);
     if (puz) {
       if (puz) {
@@ -329,7 +329,7 @@
         }
         draw_scenery();
         lines = [
-          "Time: " + (pad2(minutes)) + ":" + (pad2(seconds)) + ";" + (pad2(frames)), "Mouse [" + mouse_left + ", " + mouse_right + "] at (" + mouse_x + ", " + mouse_y + ")", "Mouse square " + ((_ref6 = mouse_square()) != null ? _ref6.toString() : void 0), "Keys pressed: [" + (Object.keys(keys_down).toString()) + "]", "Pools: [" + (((function() {
+          "Time: " + (pad2(minutes)) + ":" + (pad2(seconds)) + ";" + (pad2(frames)), "Mouse [" + mouse_left + ", " + mouse_right + "] at (" + mouse_x + ", " + mouse_y + ")", "Mouse square " + ((_ref6 = mouse_square()) != null ? _ref6.toString() : void 0), "Pools: [" + (((function() {
             var _len2, _n, _ref7, _results2;
             _ref7 = Object.keys(pools);
             _results2 = [];
