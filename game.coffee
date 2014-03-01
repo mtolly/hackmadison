@@ -30,12 +30,16 @@ squares_wide = -> if grid.length == 0 then 0 else grid[0].length
 
 pools = {}
 
+colors = {}
+current_color = 'black'
+
 new_puzzle = (height, width) ->
   grid = []
   for r in [0 .. height - 1]
     row = []
     for c in [0 .. width - 1]
       row.push null
+      colors["#{r},#{c}"] = 'black'
     grid.push row
   null
 
@@ -104,15 +108,26 @@ mouse_square = ->
 click_square = (r, c) ->
   return if typeof grid[r][c] is 'number'
   if mouse_left and mouse_right
+    delete colors["#{r},#{c}"]
     grid[r][c] = null
+    find_pools()
   else if mouse_left
+    if current_color is 'black'
+      delete colors["#{r},#{c}"]
+    else
+      colors["#{r},#{c}"] = current_color
     grid[r][c] = true
+    find_pools()
   else if mouse_right
+    if current_color is 'black'
+      delete colors["#{r},#{c}"]
+    else
+      colors["#{r},#{c}"] = current_color
     grid[r][c] = false
-  find_pools()
+    find_pools()
   null
 
-draw_square = (val, x, y) ->
+draw_square = (val, x, y, color = 'black') ->
   ctx.fillStyle = 'black'
   ctx.fillRect x, y, square_width, square_height
   switch val
@@ -120,19 +135,23 @@ draw_square = (val, x, y) ->
       ctx.fillStyle = 'white'
       ctx.fillRect x + 1, y + 1, square_width - 2, square_height - 2
     when true
-      ctx.fillStyle = '#444'
+      ctx.fillStyle = switch color
+        when 'black' then '#444'
+        when 'red' then '#622'
+        when 'blue' then '#226'
+        when 'green' then '#262'
       ctx.fillRect x + 1, y + 1, square_width - 2, square_height - 2
     when false
       ctx.fillStyle = 'white'
       ctx.fillRect x + 1, y + 1, square_width - 2, square_height - 2
       center_x = x + square_width / 2
       center_y = y + square_height / 2
-      ctx.fillStyle = 'black'
+      ctx.fillStyle = color
       ctx.fillRect center_x - 4, center_y - 4, 8, 8
     else
       ctx.fillStyle = 'white'
       ctx.fillRect x + 1, y + 1, square_width - 2, square_height - 2
-      ctx.fillStyle = 'black'
+      ctx.fillStyle = color
       if val < 10
         ctx.font = "#{square_height * 2 / 3}px Serif"
         ctx.fillText val, x + (square_width * 2 / 7), y + (square_height * 3 / 4)
@@ -146,7 +165,7 @@ draw_scenery = ->
   ctx.fillRect 0, 0, canvas_width, canvas_height
   for row, r in grid
     for val, c in row
-      draw_square(val, grid_left + c * square_width, grid_top + r * square_height)
+      draw_square(val, grid_left + c * square_width, grid_top + r * square_height, colors["#{r},#{c}"])
   null
 
 $(document).ready () ->
@@ -156,6 +175,14 @@ $(document).ready () ->
 
   $(document).keydown (evt) ->
     keys_down[evt.which] = true
+    current_color =
+      if      evt.which is 'Z'.charCodeAt 0 then 'red'
+      else if evt.which is 'X'.charCodeAt 0 then 'blue'
+      else if evt.which is 'C'.charCodeAt 0 then 'green'
+      else                                       'black'
+    if sq = mouse_square()
+      [r, c] = sq
+      click_square(r, c)
     null
 
   $(document).keyup (evt) ->
@@ -176,6 +203,11 @@ $(document).ready () ->
     null
 
   $(document).mousedown (evt) ->
+    current_color =
+      if      keys_down['Z'.charCodeAt 0] then 'red'
+      else if keys_down['X'.charCodeAt 0] then 'blue'
+      else if keys_down['C'.charCodeAt 0] then 'green'
+      else                                     'black'
     switch evt.which
       when 1
         mouse_left = true
@@ -221,8 +253,10 @@ $(document).ready () ->
         [ "Time: #{pad2(minutes)}:#{pad2(seconds)};#{pad2(frames)}"
         , "Mouse [#{mouse_left}, #{mouse_right}] at (#{mouse_x}, #{mouse_y})"
         , "Mouse square #{mouse_square() ?. toString()}"
-        #, "Keys pressed: [#{Object.keys(keys_down).toString()}]"
+        , "Keys pressed: [#{Object.keys(keys_down).toString()}]"
         , "Pools: [#{("(#{s})" for s in Object.keys(pools)).toString()}]"
+        , "Colors: [#{("#{k}: #{v}" for k, v of colors).toString()}]"
+        , "Current color: #{current_color}"
         ]
       $('#debug')[0].innerHTML = lines.join '<br />'
     null
