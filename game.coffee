@@ -39,6 +39,43 @@ new_puzzle = (height, width) ->
     grid.push row
   null
 
+load_file = (file) ->
+  str = null
+  $.ajax
+    url: file
+    dataType: 'text'
+    mimeType: 'text/plain'
+    async: false
+    success: (data) ->
+      str = data
+      null
+    error: ->
+      str = false
+      null
+  str
+
+char_to_square =
+  '#': true
+  '.': false
+  '-': null
+  '_': null
+for i in [0..9]
+  char_to_square[i] = i
+for ch, i in (['A'.charCodeAt(0) .. 'Z'.charCodeAt(0)])
+  char_to_square[String.fromCharCode ch] = i + 10
+for ch, i in (['a'.charCodeAt(0) .. 'z'.charCodeAt(0)])
+  char_to_square[String.fromCharCode ch] = i + 10
+
+load_puzzle = (str) ->
+  grid = []
+  for line in str.split '\n'
+    sqs = []
+    for c in line.split ''
+      sq = char_to_square[c]
+      sqs.push sq if sq isnt undefined
+    grid.push sqs unless sqs.length is 0
+  null
+
 is_full = ->
   for row in grid
     for val in row
@@ -125,7 +162,8 @@ $(document).ready () ->
     rect = canvas.getBoundingClientRect()
     mouse_x = evt.clientX - rect.left
     mouse_y = evt.clientY - rect.top
-    if [r, c] = mouse_square()
+    if sq = mouse_square()
+      [r, c] = sq
       click_square(r, c)
     null
 
@@ -137,11 +175,13 @@ $(document).ready () ->
     switch evt.which
       when 1
         mouse_left = true
-        if [r, c] = mouse_square()
+        if sq = mouse_square()
+          [r, c] = sq
           click_square(r, c)
       when 3
         mouse_right = true
-        if [r, c] = mouse_square()
+        if sq = mouse_square()
+          [r, c] = sq
           click_square(r, c)
     null
 
@@ -155,11 +195,8 @@ $(document).ready () ->
       window.setTimeout callback, 1000 / 60
   )()
 
-  new_puzzle 5, 5
-  grid[1][2] = 4
-  grid[4][0] = 5
-  grid[4][2] = 2
-  grid[4][4] = 3
+  puz = load_file 'puzzles/1.txt'
+  load_puzzle puz if puz
   pad2 = (s) -> ('00' + s)[-2..-1]
   (animloop = ->
     requestAnimFrame animloop
