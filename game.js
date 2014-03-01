@@ -71,6 +71,9 @@
   };
 
   click_square = function(r, c) {
+    if (typeof grid[r][c] === 'number') {
+      return;
+    }
     if (mouse_left && mouse_right) {
       grid[r][c] = null;
     } else if (mouse_left) {
@@ -103,7 +106,11 @@
         ctx.fillRect(center_x - 4, center_y - 4, 8, 8);
         break;
       default:
-        null;
+        ctx.fillStyle = 'white';
+        ctx.fillRect(x + 1, y + 1, square_width - 2, square_height - 2);
+        ctx.fillStyle = 'black';
+        ctx.font = "" + (square_height * 2 / 3) + "px Serif";
+        ctx.fillText(val, x + (square_width * 2 / 7), y + (square_height * 3 / 4));
     }
     return null;
   };
@@ -174,8 +181,10 @@
       };
     })();
     new_puzzle(5, 5);
-    grid[2][2] = true;
-    grid[3][3] = false;
+    grid[1][2] = 4;
+    grid[4][0] = 5;
+    grid[4][2] = 2;
+    grid[4][4] = 3;
     return (animloop = function() {
       var lines, _ref;
       requestAnimFrame(animloop);
