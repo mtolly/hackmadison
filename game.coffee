@@ -28,6 +28,8 @@ grid_left = 15
 squares_high = -> grid.length
 squares_wide = -> if grid.length == 0 then 0 else grid[0].length
 
+pools = {}
+
 new_puzzle = (height, width) ->
   grid = []
   for r in [0 .. height - 1]
@@ -35,6 +37,23 @@ new_puzzle = (height, width) ->
     for c in [0 .. width - 1]
       row.push null
     grid.push row
+  null
+
+is_full = ->
+  for row in grid
+    for val in row
+      return false if val is null
+  true
+
+find_pools = ->
+  pools = {}
+  for r in [0 .. squares_high() - 2]
+    for c in [0 .. squares_wide() - 2]
+      pool = true
+      for rv in [r, r + 1]
+        for cv in [c, c + 1]
+          pool = false unless grid[rv][cv] is true
+      pools["#{r},#{c}"] = true if pool
   null
 
 mouse_square = ->
@@ -53,6 +72,7 @@ click_square = (r, c) ->
     grid[r][c] = true
   else if mouse_right
     grid[r][c] = false
+  find_pools()
   null
 
 draw_square = (val, x, y) ->
@@ -156,7 +176,8 @@ $(document).ready () ->
         [ "Time: #{pad2(minutes)}:#{pad2(seconds)};#{pad2(frames)}"
         , "Mouse [#{mouse_left}, #{mouse_right}] at (#{mouse_x}, #{mouse_y})"
         , "Mouse square #{mouse_square() ?. toString()}"
-        , "Keys at #{Object.keys(keys_down).toString()}"
+        , "Keys pressed: [#{Object.keys(keys_down).toString()}]"
+        , "Pools: [#{("(#{s})" for s in Object.keys(pools)).toString()}]"
         ]
       $('#debug')[0].innerHTML = lines.join '<br />'
     null
