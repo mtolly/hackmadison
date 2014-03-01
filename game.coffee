@@ -10,6 +10,12 @@ canvas_height = 480
 
 keys_down = {}
 
+mouse_x = 0
+mouse_y = 0
+mouse_left = false
+mouse_middle = false
+mouse_right = false
+
 # Puzzle
 
 grid = []
@@ -71,6 +77,26 @@ $(document).ready () ->
     delete keys_down[evt.which]
     null
 
+  $(document).mousemove (evt) ->
+    rect = canvas.getBoundingClientRect()
+    mouse_x = evt.clientX - rect.left
+    mouse_y = evt.clientY - rect.top
+    null
+
+  $(document).mouseup (evt) ->
+    switch evt.which
+      when 1 then mouse_left = false
+      when 2 then mouse_middle = false
+      when 3 then mouse_right = false
+    null
+
+  $(document).mousedown (evt) ->
+    switch evt.which
+      when 1 then mouse_left = true
+      when 2 then mouse_middle = true
+      when 3 then mouse_right = true
+    null
+
   window.requestAnimFrame = (->
     window.requestAnimationFrame       or
     window.webkitRequestAnimationFrame or
@@ -89,6 +115,11 @@ $(document).ready () ->
     if $('#running')[0].checked
       frame++
       draw_scenery()
-      $('#debug')[0].innerHTML = "Frame #{frame}"
+      lines =
+        [ "Frame #{frame}"
+        , "Mouse #{mouse_left}, #{mouse_middle}, #{mouse_right} at (#{mouse_x}, #{mouse_y})"
+        , "Keys at #{Object.keys(keys_down).toString()}"
+        ]
+      $('#debug')[0].innerHTML = lines.join '<br />'
     null
   )()
