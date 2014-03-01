@@ -5,7 +5,8 @@ made for the HackMadison hackathon at UW Madison, 2014 Feburary 28.
 
 ## Usage
 
-Run index.htm to play.
+[Play online](http://pages.cs.wisc.edu/~tolly/hackmadison/),
+or clone the repository and load `index.htm`.
 On Chrome you may need to launch with `--allow-file-access-from-files`
 if the puzzle doesn't load.
 
