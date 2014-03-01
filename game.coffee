@@ -36,6 +36,23 @@ new_puzzle = (height, width) ->
     grid.push row
   null
 
+mouse_square = ->
+  c = Math.floor (mouse_x - grid_left) / square_width
+  r = Math.floor (mouse_y - grid_top) / square_height
+  if (0 <= r < squares_wide()) and (0 <= c < squares_high())
+    [r, c]
+  else
+    null
+
+click_square = (r, c) ->
+  if mouse_left and mouse_right
+    grid[r][c] = null
+  else if mouse_left
+    grid[r][c] = true
+  else if mouse_right
+    grid[r][c] = false
+  null
+
 draw_square = (val, x, y) ->
   ctx.fillStyle = 'black'
   ctx.fillRect x, y, square_width, square_height
@@ -81,20 +98,30 @@ $(document).ready () ->
     rect = canvas.getBoundingClientRect()
     mouse_x = evt.clientX - rect.left
     mouse_y = evt.clientY - rect.top
+    if [r, c] = mouse_square()
+      click_square(r, c)
     null
 
   $(document).mouseup (evt) ->
-    switch evt.which
-      when 1 then mouse_left = false
-      when 2 then mouse_middle = false
-      when 3 then mouse_right = false
+    mouse_left = mouse_middle = mouse_right = false
+    #switch evt.which
+    #  when 1 then mouse_left = false
+    #  when 2 then mouse_middle = false
+    #  when 3 then mouse_right = false
     null
 
   $(document).mousedown (evt) ->
     switch evt.which
-      when 1 then mouse_left = true
-      when 2 then mouse_middle = true
-      when 3 then mouse_right = true
+      when 1
+        mouse_left = true
+        if [r, c] = mouse_square()
+          click_square(r, c)
+      when 2
+        mouse_middle = true
+      when 3
+        mouse_right = true
+        if [r, c] = mouse_square()
+          click_square(r, c)
     null
 
   window.requestAnimFrame = (->
@@ -118,6 +145,7 @@ $(document).ready () ->
       lines =
         [ "Frame #{frame}"
         , "Mouse #{mouse_left}, #{mouse_middle}, #{mouse_right} at (#{mouse_x}, #{mouse_y})"
+        , "Mouse square #{mouse_square() ?. toString()}"
         , "Keys at #{Object.keys(keys_down).toString()}"
         ]
       $('#debug')[0].innerHTML = lines.join '<br />'
