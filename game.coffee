@@ -133,8 +133,12 @@ draw_square = (val, x, y) ->
       ctx.fillStyle = 'white'
       ctx.fillRect x + 1, y + 1, square_width - 2, square_height - 2
       ctx.fillStyle = 'black'
-      ctx.font = "#{square_height * 2 / 3}px Serif"
-      ctx.fillText val, x + (square_width * 2 / 7), y + (square_height * 3 / 4)
+      if val < 10
+        ctx.font = "#{square_height * 2 / 3}px Serif"
+        ctx.fillText val, x + (square_width * 2 / 7), y + (square_height * 3 / 4)
+      else
+        ctx.font = "#{square_height * 3 / 5}px Serif"
+        ctx.fillText val, x + (square_width * 1 / 7), y + (square_height * 5 / 7)
   null
 
 draw_scenery = ->
@@ -195,8 +199,12 @@ $(document).ready () ->
       window.setTimeout callback, 1000 / 60
   )()
 
-  puz = load_file 'puzzles/1.txt'
-  load_puzzle puz if puz
+  puzzle_file = 'puzzles/1.txt'
+  puz = load_file puzzle_file
+  if puz
+    load_puzzle puz if puz
+  else
+    throw "Puzzle #{puzzle_file} not found."
   pad2 = (s) -> ('00' + s)[-2..-1]
   (animloop = ->
     requestAnimFrame animloop

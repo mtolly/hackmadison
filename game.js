@@ -226,8 +226,13 @@
         ctx.fillStyle = 'white';
         ctx.fillRect(x + 1, y + 1, square_width - 2, square_height - 2);
         ctx.fillStyle = 'black';
-        ctx.font = "" + (square_height * 2 / 3) + "px Serif";
-        ctx.fillText(val, x + (square_width * 2 / 7), y + (square_height * 3 / 4));
+        if (val < 10) {
+          ctx.font = "" + (square_height * 2 / 3) + "px Serif";
+          ctx.fillText(val, x + (square_width * 2 / 7), y + (square_height * 3 / 4));
+        } else {
+          ctx.font = "" + (square_height * 3 / 5) + "px Serif";
+          ctx.fillText(val, x + (square_width * 1 / 7), y + (square_height * 5 / 7));
+        }
     }
     return null;
   };
@@ -247,7 +252,7 @@
   };
 
   $(document).ready(function() {
-    var animloop, pad2, puz;
+    var animloop, pad2, puz, puzzle_file;
     canvas = $('#canvas')[0];
     ctx = canvas.getContext('2d');
     $(document).keydown(function(evt) {
@@ -297,9 +302,14 @@
         return window.setTimeout(callback, 1000 / 60);
       };
     })();
-    puz = load_file('puzzles/1.txt');
+    puzzle_file = 'puzzles/1.txt';
+    puz = load_file(puzzle_file);
     if (puz) {
-      load_puzzle(puz);
+      if (puz) {
+        load_puzzle(puz);
+      }
+    } else {
+      throw "Puzzle " + puzzle_file + " not found.";
     }
     pad2 = function(s) {
       return ('00' + s).slice(-2);
