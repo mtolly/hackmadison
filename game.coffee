@@ -7,9 +7,6 @@ frames = 0
 seconds = 0
 minutes = 0
 
-canvas_width  = 640
-canvas_height = 480
-
 keys_down = {}
 
 mouse_x = 0
@@ -34,10 +31,8 @@ colors = {}
 current_color = 'black'
 
 set_canvas = ->
-  canvas_width = squares_wide() * square_width + 2 * grid_left
-  canvas_height = squares_high() * square_height + 2 * grid_top
-  canvas.width = canvas_width
-  canvas.height = canvas_height
+  canvas.width = squares_wide() * square_width + 2 * grid_left
+  canvas.height = squares_high() * square_height + 2 * grid_top
 
 new_puzzle = (height, width) ->
   grid = []
@@ -172,7 +167,7 @@ draw_square = (val, x, y, color = 'black') ->
 
 draw_scenery = ->
   ctx.fillStyle = 'gray'
-  ctx.fillRect 0, 0, canvas_width, canvas_height
+  ctx.fillRect 0, 0, canvas.width, canvas.height
   for row, r in grid
     for val, c in row
       draw_square(val, grid_left + c * square_width, grid_top + r * square_height, colors["#{r},#{c}"])
